@@ -58,7 +58,7 @@ public class UserService
 
         // Hash the password (You should use a proper password hashing mechanism)
         user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-
+        user.Role = "NORMAL";
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
