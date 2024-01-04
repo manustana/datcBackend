@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/manu/DATCProiect/Backend/ProiectDATC/ProiectDATC.csproj": {}
+    "/home/manu/datcBackend/ProiectDATC/ProiectDATC.csproj": {}
   },
   "projects": {
-    "/home/manu/DATCProiect/Backend/ProiectDATC/ProiectDATC.csproj": {
+    "/home/manu/datcBackend/ProiectDATC/ProiectDATC.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/manu/DATCProiect/Backend/ProiectDATC/ProiectDATC.csproj",
+        "projectUniqueName": "/home/manu/datcBackend/ProiectDATC/ProiectDATC.csproj",
         "projectName": "ProiectDATC",
-        "projectPath": "/home/manu/DATCProiect/Backend/ProiectDATC/ProiectDATC.csproj",
+        "projectPath": "/home/manu/datcBackend/ProiectDATC/ProiectDATC.csproj",
         "packagesPath": "/home/manu/.nuget/packages/",
-        "outputPath": "/home/manu/DATCProiect/Backend/ProiectDATC/obj/",
+        "outputPath": "/home/manu/datcBackend/ProiectDATC/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/manu/.nuget/NuGet/NuGet.Config"
@@ -104,6 +104,20 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
+              "version": "[7.0.13, 7.0.13]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.linux-x64",
+              "version": "[7.0.13, 7.0.13]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Runtime.linux-x64",
+              "version": "[7.0.13, 7.0.13]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -113,6 +127,11 @@
             }
           },
           "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/7.0.113/RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "linux-x64": {
+          "#import": []
         }
       }
     }

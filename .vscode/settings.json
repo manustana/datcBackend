@@ -1,0 +1,16 @@
+{
+    "sqltools.connections": [
+        {
+            "mssqlOptions": {
+                "appName": "SQLTools",
+                "useUTC": true,
+                "encrypt": true
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "driver": "MSSQL",
+            "name": "AzureDB",
+            "connectString": "Server=tcp:proiectdatc.database.windows.net,1433;Initial Catalog=ProiectDATC;Persist Security Info=False;User ID=MaxDATCpr;Password=1L/9-3\\\\-Z56Iw0O;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+        }
+    ]
+}
