@@ -23,7 +23,7 @@ public class UserService
 
     public async Task<User> LoginAsync(UserLogin model)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
         {
@@ -50,10 +50,9 @@ public class UserService
 
     public async Task<int> CreateUserAsync(User user)
     {
-        // Check if the username is already taken
-        if (await _context.Users.AnyAsync(u => u.Username == user.Username))
+        if (await _context.Users.AnyAsync(u => u.Email == user.Email))
         {
-            throw new ArgumentException("Username already exists");
+            throw new ArgumentException("User with that email already exists");
         }
 
         user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);

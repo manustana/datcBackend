@@ -40,7 +40,7 @@ public class UserController : ControllerBase
 
     [HttpPost("register")]
     [AllowAnonymous]
-    public async Task<IActionResult> Register([FromBody] User model)
+    public async Task<IActionResult> Register([FromBody] UserRegisterDto model)
     {
         try
         {
@@ -53,7 +53,15 @@ public class UserController : ControllerBase
                 model.Role = "NORMAL";
             }
 
-            var userId = await _userService.CreateUserAsync(model);
+            var newUser = new User
+            {
+                Username = model.Username,
+                Email = model.Email,
+                Role = model.Role,
+                Password = model.Password
+            };
+
+            var userId = await _userService.CreateUserAsync(newUser);
             var user = await _userService.GetUserByIdAsync(userId);
             var token = _userService.GenerateJwtToken(user);
 
