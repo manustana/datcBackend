@@ -1,13 +1,14 @@
 // Controllers/StatisticsController.cs
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProiectDATC.Models;
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "ADMIN")]
 public class StatisticsController : ControllerBase
 {
     private readonly StatisticsService _statisticsService;
@@ -20,14 +21,22 @@ public class StatisticsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetStatistics()
     {
-        try
+        var role = User.FindFirst(ClaimTypes.Role);
+        if (role != null)
         {
-            var statistics = await _statisticsService.GetStatisticsAsync();
-            return Ok(statistics);
+            try
+            {
+                var statistics = await _statisticsService.GetStatisticsAsync();
+                return Ok(statistics);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}");
+            }
         }
-        catch (Exception ex)
+        else
         {
-            return BadRequest($"Error: {ex.Message}");
+            return BadRequest("Access denied");
         }
     }
 }
