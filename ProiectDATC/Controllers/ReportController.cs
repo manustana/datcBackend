@@ -61,7 +61,7 @@ public class ReportController : ControllerBase
                         if (user != null)
                         {
                             model.UserId = user.Id;
-
+                            model.Status = "PENDING";
                             await _reportService.CreateReportAsync(model);
 
                             return Ok("Report creation request sent to the queue");
