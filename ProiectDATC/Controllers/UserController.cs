@@ -24,7 +24,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            var role = User.FindFirst(ClaimTypes.NameIdentifier).Value.ToString();
+            var role = User.FindFirst(ClaimTypes.Role).Value.ToString();
             if (role != "ADMIN")
             {
                 throw new AccessViolationException("Access denied");
@@ -96,7 +96,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            var role = User.FindFirst(ClaimTypes.NameIdentifier).Value.ToString();
+            var role = User.FindFirst(ClaimTypes.Role).Value.ToString();
             if (role != "ADMIN")
             {
                 throw new AccessViolationException("Access denied");
@@ -122,7 +122,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            var role = User.FindFirst(ClaimTypes.NameIdentifier).Value.ToString();
+            var role = User.FindFirst(ClaimTypes.Role).Value.ToString();
             if (role != "ADMIN")
             {
                 throw new AccessViolationException("Access denied");
