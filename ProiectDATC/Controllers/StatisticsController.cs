@@ -21,8 +21,8 @@ public class StatisticsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetStatistics()
     {
-        var role = User.FindFirst(ClaimTypes.Role);
-        if (role != null)
+        var role = User.FindFirst(ClaimTypes.Role).Value.ToString();
+        if (role == "ADMIN")
         {
             try
             {
@@ -36,7 +36,7 @@ public class StatisticsController : ControllerBase
         }
         else
         {
-            return BadRequest("Access denied");
+            return BadRequest(role);
         }
     }
 }

@@ -111,7 +111,6 @@ public class ReportService
 
         var message = new ServiceBusMessage
         {
-            // Convert the report data to JSON and set it as the message body
             Body = new BinaryData(Encoding.UTF8.GetBytes(jsonString))
         };
 
@@ -127,7 +126,6 @@ public class ReportService
 
         var message = new ServiceBusMessage
         {
-            // Convert the report data to JSON and set it as the message body
             Body = new BinaryData(Encoding.UTF8.GetBytes(jsonString))
         };
 

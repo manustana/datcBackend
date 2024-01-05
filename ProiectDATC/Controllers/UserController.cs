@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProiectDATC.Models;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 [ApiController]
@@ -17,11 +19,16 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize]
     public async Task<IActionResult> GetAllUsers()
     {
         try
         {
+            var role = User.FindFirst(ClaimTypes.NameIdentifier).Value.ToString();
+            if (role != "ADMIN")
+            {
+                throw new AccessViolationException("Access denied");
+            }
             var users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
@@ -37,11 +44,11 @@ public class UserController : ControllerBase
     {
         try
         {
-            if(typeof(User).GetProperty("Role").GetValue(model) != null)
+            if (typeof(User).GetProperty("Role").GetValue(model) != null)
             {
                 model.Role = (string)typeof(User).GetProperty("Role").GetValue(model);
             }
-            else 
+            else
             {
                 model.Role = "NORMAL";
             }
@@ -89,6 +96,11 @@ public class UserController : ControllerBase
     {
         try
         {
+            var role = User.FindFirst(ClaimTypes.NameIdentifier).Value.ToString();
+            if (role != "ADMIN")
+            {
+                throw new AccessViolationException("Access denied");
+            }
             var user = await _userService.GetUserByIdAsync(id);
 
             if (user == null)
@@ -110,6 +122,11 @@ public class UserController : ControllerBase
     {
         try
         {
+            var role = User.FindFirst(ClaimTypes.NameIdentifier).Value.ToString();
+            if (role != "ADMIN")
+            {
+                throw new AccessViolationException("Access denied");
+            }
             var user = await _userService.GetUserByEmailAsync(email);
 
             if (user == null)
@@ -126,10 +143,16 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("edit/{id}")]
+    [Authorize]
     public async Task<IActionResult> UpdateUser(int id, [FromBody] User model)
     {
         try
         {
+            var uid = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (id != uid)
+            {
+                throw new AccessViolationException("Access denied");
+            }
             await _userService.UpdateUserAsync(id, model);
             return Ok("User updated successfully");
         }
@@ -149,6 +172,11 @@ public class UserController : ControllerBase
     {
         try
         {
+            var uid = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (id != uid)
+            {
+                throw new AccessViolationException("Access denied");
+            }
             await _userService.DeleteUserAsync(id);
             return Ok("User deleted successfully");
         }

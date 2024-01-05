@@ -21,10 +21,16 @@ public class ReportController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetAllReports()
     {
         try
         {
+            var role = User.FindFirst(ClaimTypes.NameIdentifier).Value.ToString();
+            if (role != "ADMIN")
+            {
+                throw new AccessViolationException("Access denied");
+            }
             var reports = await _reportService.GetAllReportsAsync();
             return Ok(reports);
         }
@@ -87,35 +93,9 @@ public class ReportController : ControllerBase
         }
     }
 
-    // [HttpPost("create")]
-    // [Authorize]
-    // public async Task<IActionResult> CreateReport([FromBody] Report model)
-    // {
-    //     try
-    //     {
-    //         if (User.Identity.IsAuthenticated)
-    //         {
-    //             // ... existing code
-
-    //             // Send the report data to the Azure Service Bus queue
-    //             await _reportService.CreateReportAsync(model);
-
-    //             // Return a response based on your requirements
-    //             return Ok("Report creation request sent to the queue");
-    //         }
-    //         else
-    //         {
-    //             return Unauthorized("User is not authenticated");
-    //         }
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         return BadRequest($"Error: {ex.Message}");
-    //     }
-    // }
-
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<IActionResult> GetReportById(int id)
     {
         try
@@ -136,6 +116,7 @@ public class ReportController : ControllerBase
     }
 
     [HttpPut("edit/{id}")]
+    [Authorize]
     public async Task<IActionResult> UpdateReport(int id, [FromBody] ReportDto model)
     {
         try
@@ -154,6 +135,7 @@ public class ReportController : ControllerBase
     }
 
     [HttpDelete("delete/{id}")]
+    [Authorize]
     public async Task<IActionResult> DeleteReport(int id)
     {
         try

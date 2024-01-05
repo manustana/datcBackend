@@ -38,6 +38,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ReportService>();
+builder.Services.AddScoped<StatisticsService>();
 //builder.Services.AddScoped<MessageHandler>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

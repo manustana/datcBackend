@@ -56,7 +56,6 @@ public class UserService
             throw new ArgumentException("Username already exists");
         }
 
-        // Hash the password (You should use a proper password hashing mechanism)
         user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
@@ -113,15 +112,5 @@ public class UserService
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
-    }
-
-    public static int GetUserIdFromToken(string token)
-    {
-        // Extract user ID from the token claims (implement as needed)
-        // For example, using System.IdentityModel.Tokens.Jwt:
-        var handler = new JwtSecurityTokenHandler();
-        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-        var userId = int.Parse(jsonToken?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value);
-        return userId;
     }
 }
