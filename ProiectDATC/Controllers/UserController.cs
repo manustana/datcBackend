@@ -100,7 +100,7 @@ public class UserController : ControllerBase
         if (User.Identity.IsAuthenticated)
         {
             var uid = User.FindFirst(ClaimTypes.NameIdentifier);
-
+            
             if (uid != null)
             {
                 var userId = uid.Value;
@@ -111,7 +111,7 @@ public class UserController : ControllerBase
 
                     if (user != null)
                     {
-                        return Ok(user);
+                        return Ok(new {user.Id, user.Username});
                     }
                     else
                     {
