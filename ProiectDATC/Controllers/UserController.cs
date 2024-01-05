@@ -93,6 +93,48 @@ public class UserController : ControllerBase
         }
     }
 
+    [HttpGet("currentUser")]
+    [Authorize]
+    public async Task<IActionResult> GetCurrentLoggedInUser()
+    {
+        if (User.Identity.IsAuthenticated)
+        {
+            var uid = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (uid != null)
+            {
+                var userId = uid.Value;
+
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    var user = await _userService.GetUserByIdAsync(int.Parse(userId));
+
+                    if (user != null)
+                    {
+                        return Ok(user);
+                    }
+                    else
+                    {
+                        return NotFound($"User not found for id: {userId}");
+                    }
+                }
+                else
+                {
+                    return BadRequest("Id claim has null or empty value");
+                }
+            }
+            else
+            {
+                return BadRequest("Id claim not found");
+            }
+
+        }
+        else
+        {
+            return Unauthorized("User is not authenticated");
+        }
+    }
+
     [HttpGet("details/{id}")]
     [Authorize]
     public async Task<IActionResult> GetUserById(int id)
