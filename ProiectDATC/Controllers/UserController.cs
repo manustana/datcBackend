@@ -44,14 +44,15 @@ public class UserController : ControllerBase
     {
         try
         {
-            if (typeof(User).GetProperty("Role").GetValue(model) != null)
+            if (model.GetType().GetProperty("Role") != null)
             {
-                model.Role = (string)typeof(User).GetProperty("Role").GetValue(model);
+                model.Role = (string)model.GetType().GetProperty("Role").GetValue(model);
             }
             else
             {
                 model.Role = "NORMAL";
             }
+
             var userId = await _userService.CreateUserAsync(model);
             var user = await _userService.GetUserByIdAsync(userId);
             var token = _userService.GenerateJwtToken(user);
@@ -67,6 +68,7 @@ public class UserController : ControllerBase
             return BadRequest($"Error: {ex.Message}");
         }
     }
+
 
     [HttpPost("login")]
     [AllowAnonymous]
