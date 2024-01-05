@@ -51,7 +51,7 @@ namespace ProiectDATC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Reports");
+                    b.ToTable("Reports", (string)null);
                 });
 
             modelBuilder.Entity("ProiectDATC.Models.Role", b =>
@@ -68,7 +68,7 @@ namespace ProiectDATC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
@@ -102,7 +102,7 @@ namespace ProiectDATC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Statistics");
+                    b.ToTable("Statistics", (string)null);
                 });
 
             modelBuilder.Entity("ProiectDATC.Models.User", b =>
@@ -134,7 +134,7 @@ namespace ProiectDATC.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 #pragma warning restore 612, 618
         }

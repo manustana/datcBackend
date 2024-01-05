@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[Authorize(Roles = "ADMIN")]
 public class StatisticsController : ControllerBase
 {
     private readonly StatisticsService _statisticsService;
