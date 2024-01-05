@@ -44,14 +44,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            if (model.GetType().GetProperty("Role") != null)
-            {
-                model.Role = (string)model.GetType().GetProperty("Role").GetValue(model);
-            }
-            else
-            {
-                model.Role = "NORMAL";
-            }
+            model.Role = "NORMAL";
 
             var newUser = new User
             {
