@@ -36,6 +36,14 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        });
+});
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ReportService>();
 builder.Services.AddScoped<StatisticsService>();
