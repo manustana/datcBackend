@@ -47,15 +47,13 @@ public class ReportService
             throw new ArgumentException("Report not found");
         }
 
-        // Update properties based on your requirements
         existingReport.UserId = model.UserId;
         existingReport.Longitude = model.Longitude;
         existingReport.Latitude = model.Latitude;
         existingReport.Date = model.Date;
         existingReport.Type = model.Type;
-        existingReport.Status = model.Status;
+        existingReport.Status = "DONE";
 
-        // Send the updated report data to Azure Service Bus queue
         await SendMessageToQueueAsyncUpdateReport(existingReport);
     }
     public async Task<List<Report>> GetAllReportsAsync()
