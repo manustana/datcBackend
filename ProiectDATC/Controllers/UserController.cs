@@ -44,11 +44,11 @@ public class UserController : ControllerBase
     {
         try
         {
-            model.Role = "NORMAL";
-
+            model.Role ??= "NORMAL";
             var newUser = new User
             {
                 Username = model.Username,
+                Cnp = model.Cnp,
                 Email = model.Email,
                 Role = model.Role,
                 Password = model.Password,
