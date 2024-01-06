@@ -112,7 +112,7 @@ public class UserController : ControllerBase
 
                     if (user != null)
                     {
-                        return Ok(new {user.Id, user.Username, user.Role});
+                        return Ok(new {user.Id, user.Username, user.Cnp, user.Email, user.Role});
                     }
                     else
                     {
