@@ -51,7 +51,8 @@ public class UserController : ControllerBase
                 Username = model.Username,
                 Email = model.Email,
                 Role = model.Role,
-                Password = model.Password
+                Password = model.Password,
+                Points = 0
             };
 
             var userId = await _userService.CreateUserAsync(newUser);
