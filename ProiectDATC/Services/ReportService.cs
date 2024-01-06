@@ -86,6 +86,13 @@ public class ReportService
         await _context.SaveChangesAsync();
     }
 
+    public async Task<List<Report>> GetReportsByUserIdAsync(int userId)
+    {
+        return await _context.Reports
+            .Where(r => r.UserId == userId)
+            .ToListAsync();
+    }
+
     private async Task SendMessageToQueueAsync(ReportDto report)
     {
         await using var client = new ServiceBusClient(_serviceBusConnectionString);

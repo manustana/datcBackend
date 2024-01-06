@@ -93,6 +93,28 @@ public class ReportController : ControllerBase
         }
     }
 
+    [HttpGet("user/{userId}")]
+    [Authorize]
+    public async Task<IActionResult> GetReportsByUserId(int userId)
+    {
+        try
+        {
+            var role = User.FindFirst(ClaimTypes.Role).Value.ToString();
+            var requestingUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            if (role != "ADMIN" && requestingUserId != userId)
+            {
+                return BadRequest("Access denied");
+            }
+
+            var reports = await _reportService.GetReportsByUserIdAsync(userId);
+            return Ok(reports);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Error: {ex.Message}");
+        }
+    }
 
     [HttpGet("{id}")]
     [Authorize]
@@ -121,6 +143,11 @@ public class ReportController : ControllerBase
     {
         try
         {
+            string role = User.FindFirst(ClaimTypes.Role).Value.ToString();
+            if (role != "ADMIN")
+            {
+                return BadRequest("Access denied");
+            }
             await _reportService.UpdateReportAsync(id, model);
             return Ok("Report updated successfully");
         }
@@ -140,6 +167,11 @@ public class ReportController : ControllerBase
     {
         try
         {
+            string role = User.FindFirst(ClaimTypes.Role).Value.ToString();
+            if (role != "ADMIN")
+            {
+                return BadRequest("Access denied");
+            }
             await _reportService.DeleteReportAsync(id);
             return Ok("Report deleted successfully");
         }
