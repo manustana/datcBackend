@@ -109,7 +109,7 @@ public class UserService
         {
             throw new ArgumentException("User not found");
         }
-
+        existingUser.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
         existingUser.Username = model.Username;
         existingUser.Role = model.Role;
 
