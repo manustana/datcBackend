@@ -14,16 +14,20 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Seed roles
         modelBuilder.Entity<Role>().HasData(
             new Role { Id = 1, Name = "NORMAL" },
             new Role { Id = 2, Name = "ADMIN" }
         );
 
         modelBuilder.Entity<User>()
-                .HasIndex(u => u.Email)
-                .IsUnique();
-        
+            .HasIndex(u => u.Email)
+            .IsUnique();
+
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Cnp)
+            .IsUnique();
+
         base.OnModelCreating(modelBuilder);
     }
+
 }

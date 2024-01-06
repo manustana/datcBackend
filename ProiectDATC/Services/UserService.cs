@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using ProiectDATC.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -50,16 +51,54 @@ public class UserService
 
     public async Task<int> CreateUserAsync(User user)
     {
+        // Check if a user with the same email or CNP already exists
         if (await _context.Users.AnyAsync(u => u.Email == user.Email))
         {
             throw new ArgumentException("User with that email already exists");
         }
 
+        if (await _context.Users.AnyAsync(u => u.Cnp == user.Cnp))
+        {
+            throw new ArgumentException("User with that CNP already exists");
+        }
+
+        // Validate CNP
+        if (!ValidateCNP(user.Cnp))
+        {
+            throw new ArgumentException("Invalid CNP");
+        }
+
+        // Hash the password
         user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+        user.Points = 0;
+        // Add the user to the context and save changes
         _context.Users.Add(user);
-        await _context.SaveChangesAsync();
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            // Check if the exception is due to a unique constraint violation
+            if (IsUniqueConstraintViolation(ex))
+            {
+                throw new ArgumentException("Concurrency issue: Another user with the same email or CNP was created concurrently.");
+            }
+
+            // Handle other exceptions or rethrow if necessary
+            throw;
+        }
 
         return user.Id;
+    }
+
+    private static bool IsUniqueConstraintViolation(DbUpdateException ex)
+    {
+        const int uniqueConstraintViolationErrorNumber = 2601; // SQL Server error number for unique constraint violation
+
+        return ex.InnerException is SqlException sqlException &&
+               sqlException.Number == uniqueConstraintViolationErrorNumber;
     }
 
     public async Task UpdateUserAsync(int id, User model)
@@ -112,4 +151,65 @@ public class UserService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+
+    public static bool ValidateCNP(string cnp)
+    {
+        // Check if the CNP has the correct length
+        if (cnp.Length != 13)
+        {
+            return false;
+        }
+
+        // Check if all characters are digits
+        if (!cnp.All(char.IsDigit))
+        {
+            return false;
+        }
+
+        // Extract individual components
+        int year = int.Parse(cnp.Substring(1, 2));
+        int month = int.Parse(cnp.Substring(3, 2));
+        int day = int.Parse(cnp.Substring(5, 2));
+
+        // Validate date components
+        if (!IsValidDate(year, month, day))
+        {
+            return false;
+        }
+
+        // Check the county code
+        int countyCode = int.Parse(cnp.Substring(7, 2));
+        if (countyCode < 1 || countyCode > 52)
+        {
+            return false;
+        }
+
+        // Validate the rest of the CNP using the control digit
+        int controlDigit = int.Parse(cnp.Substring(12, 1));
+        int computedControlDigit = ComputeControlDigit(cnp);
+
+        return controlDigit == computedControlDigit;
+    }
+
+    private static bool IsValidDate(int year, int month, int day)
+    {
+        // Add your custom validation logic for the date (e.g., considering leap years)
+        // For simplicity, this example only checks the month and day ranges.
+        return year >= 0 && month >= 1 && month <= 12 && day >= 1 && day <= 31;
+    }
+
+    private static int ComputeControlDigit(string cnp)
+    {
+        int[] weights = { 2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9 };
+
+        int sum = 0;
+        for (int i = 0; i < weights.Length; i++)
+        {
+            sum += int.Parse(cnp[i].ToString()) * weights[i];
+        }
+
+        int remainder = sum % 11;
+        return remainder < 10 ? remainder : 1;
+    }
+
 }

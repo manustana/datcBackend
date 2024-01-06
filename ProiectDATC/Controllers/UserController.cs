@@ -218,7 +218,8 @@ public class UserController : ControllerBase
         try
         {
             var uid = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            if (id != uid)
+            var role = User.FindFirst(ClaimTypes.Role).Value;
+            if (id != uid || role != "ADMIN")
             {
                 throw new AccessViolationException("Access denied");
             }

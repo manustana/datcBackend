@@ -38,6 +38,16 @@ public class ReportService
         return 0;
     }
 
+    public async Task<List<Report>> GetAllReportsAsync()
+    {
+        return await _context.Reports.ToListAsync();
+    }
+
+    public async Task<Report> GetReportByIdAsync(int id)
+    {
+        return await _context.Reports.FindAsync(id);
+    }
+
     public async Task UpdateReportAsync(int id, ReportDto model)
     {
         var existingReport = await _context.Reports.FindAsync(id);
@@ -54,37 +64,14 @@ public class ReportService
         existingReport.Type = model.Type;
         existingReport.Status = "DONE";
 
-        await SendMessageToQueueAsyncUpdateReport(existingReport);
+        var user = await _context.Users.FindAsync(model.UserId);
+        if (user != null)
+        {
+            user.Points += 10;
+        }
+
+        await _context.SaveChangesAsync();
     }
-    public async Task<List<Report>> GetAllReportsAsync()
-    {
-        return await _context.Reports.ToListAsync();
-    }
-
-    public async Task<Report> GetReportByIdAsync(int id)
-    {
-        return await _context.Reports.FindAsync(id);
-    }
-
-    // public async Task UpdateReportAsync(int id, Report model)
-    // {
-    //     var existingReport = await _context.Reports.FindAsync(id);
-
-    //     if (existingReport == null)
-    //     {
-    //         throw new ArgumentException("Report not found");
-    //     }
-
-    //     // Update properties based on your requirements
-    //     existingReport.UserId = model.UserId;
-    //     existingReport.Longitude = model.Longitude;
-    //     existingReport.Latitude = model.Latitude;
-    //     existingReport.Date = model.Date;
-    //     existingReport.Type = model.Type;
-    //     existingReport.Status = model.Status;
-
-    //     await _context.SaveChangesAsync();
-    // }
 
     public async Task DeleteReportAsync(int id)
     {
@@ -99,23 +86,7 @@ public class ReportService
         await _context.SaveChangesAsync();
     }
 
-
     private async Task SendMessageToQueueAsync(ReportDto report)
-    {
-        await using var client = new ServiceBusClient(_serviceBusConnectionString);
-        var sender = client.CreateSender(_queueName);
-
-        var jsonString = JsonSerializer.Serialize(report);
-
-        var message = new ServiceBusMessage
-        {
-            Body = new BinaryData(Encoding.UTF8.GetBytes(jsonString))
-        };
-
-        await sender.SendMessageAsync(message);
-    }
-
-    private async Task SendMessageToQueueAsyncUpdateReport(Report report)
     {
         await using var client = new ServiceBusClient(_serviceBusConnectionString);
         var sender = client.CreateSender(_queueName);
