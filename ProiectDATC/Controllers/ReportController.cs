@@ -1,15 +1,11 @@
-// Controllers/ReportController.cs
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProiectDATC.Models;
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize] // Use [Authorize] attribute to ensure authentication is required for all actions
+[Authorize]
 public class ReportController : ControllerBase
 {
     private readonly ReportService _reportService;

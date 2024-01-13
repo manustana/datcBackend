@@ -12,7 +12,7 @@ namespace ProiectDATC.Models
             var processorOptions = new ServiceBusProcessorOptions
             {
                 MaxConcurrentCalls = 1,
-                AutoCompleteMessages = false // Set to true if you want to automatically complete messages after processing
+                AutoCompleteMessages = false
             };
 
             var client = new ServiceBusClient(connectionString);
@@ -23,10 +23,8 @@ namespace ProiectDATC.Models
 
         private async Task ProcessMessageHandler(ProcessMessageEventArgs args)
         {
-            // Pass the received message to the message processor
             await _messageProcessor.ProcessMessageAsync(args.Message);
 
-            // Complete the message to remove it from the queue
             await args.CompleteMessageAsync(args.Message);
         }
 

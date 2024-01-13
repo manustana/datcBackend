@@ -1,11 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ProiectDATC.Models;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using Azure.Messaging.ServiceBus;
 using System.Text.Json;
 using System.Text;
@@ -22,19 +16,9 @@ public class ReportService
         _queueName = "proiectdatc";
     }
 
-    // public async Task<int> CreateReportAsync(Report report)
-    // {
-    //     _context.Reports.Add(report);
-    //     await _context.SaveChangesAsync();
-    //     return report.Id;
-    // }
-
     public async Task<int> CreateReportAsync(ReportDto report)
     {
-        // Send the report data to Azure Service Bus queue
         await SendMessageToQueueAsync(report);
-
-        // Note: You might want to return something meaningful, depending on your application
         return 0;
     }
 

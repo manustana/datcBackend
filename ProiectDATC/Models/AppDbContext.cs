@@ -1,4 +1,3 @@
-// Models/UserDbContext.cs
 using Microsoft.EntityFrameworkCore;
 using ProiectDATC.Models;
 public class AppDbContext : DbContext

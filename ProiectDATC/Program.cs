@@ -5,15 +5,20 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Data.SqlClient;
 using ProiectDATC.Models;
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    var configuration = builder.Configuration; // Get IConfiguration instance
-    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+    var configuration = builder.Configuration;
+
+    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), sqlServerOptionsAction =>
+    {
+        sqlServerOptionsAction.EnableRetryOnFailure(
+            maxRetryCount: 5, 
+            maxRetryDelay: TimeSpan.FromSeconds(30), 
+            errorNumbersToAdd: null);
+    });
 })
 .AddScoped<AppDbContext>();
 builder.Services.AddAuthentication(options =>
@@ -47,9 +52,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ReportService>();
 builder.Services.AddScoped<StatisticsService>();
-//builder.Services.AddScoped<MessageHandler>();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -58,11 +61,8 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-
-//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
 
 app.Run();
